@@ -1,0 +1,10 @@
+logs/*
+!.gitkeep
+node_modules/
+bower_components/
+tmp
+.DS_Store
+.idea
+cucumber/reports/bower_components/
+cucumber/reports/node_modules/
+cucumber/reports/e2e-tests/
