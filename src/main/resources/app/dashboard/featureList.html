@@ -1,0 +1,102 @@
+<div class="container-fluid">
+    <div class="row">
+        <strong>Filter :</strong>&nbsp;<input type="text" ng-model="filterScenario.name" tooltip-placement="top" tooltip="by scenario name" tooltip-class="helpBox">
+        &nbsp;
+        <div class="btn-group" dropdown dropdown-append-to-body>
+            <button id="btn-append-to-body" type="button" class="btn btn-sm" dropdown-toggle
+                    ng-class="{'btn-default': !filterScenario.result.status  || filterScenario.result.status == '','btn-danger': filterScenario.result.status == 'failed', 'btn-success': filterScenario.result.status == 'passed'}">
+                by Status <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="btn-append-to-body">
+                <li role="menuitem"><a ng-click="filterScenario.result.status = '';filterScenario.result.failedStep.name = ''">All <span class="badge">{{allScenarios.result.passed + allScenarios.result.failed}}</span></a></li>
+                <li role="menuitem"><a ng-click="filterScenario.result.status = 'passed';filterScenario.result.failedStep.name = ''">Passed <span class="badge">{{allScenarios.result.passed}}</span></a></li>
+                <li role="menuitem"><a ng-click="filterScenario.result.status = 'failed';filterScenario.result.failedStep.name = ''">Failed <div class="badge">{{allScenarios.result.failed}}</div></a></li>
+            </ul>
+
+
+        </div>
+        <span ng-show="!filterScenario.result.status || filterScenario.result.status == 'failed' || filterScenario.result.status == ''">
+        <div class="btn-group">
+            <label class="btn btn-sm btn-default" ng-model="failingStep" btn-radio="'show'"
+                   tooltip-placement="top" tooltip="Show failing steps" tooltip-class="helpBox"><i
+                    class="glyphicon glyphicon-eye-open"></i></label>
+            <label class="btn btn-sm btn-default" ng-model="failingStep" btn-radio="'hide'"
+                   tooltip-placement="top" tooltip="Hide failing steps" tooltip-class="helpBox" ng-click="filterScenario.result.failedStep.name = ''"><i
+                    class="glyphicon glyphicon-eye-close"></i></label>
+        </div>
+              <span ng-show="failingStep && failingStep == 'show'"> <input type="text" ng-model="filterScenario.result.failedStep.name" tooltip-placement="top" tooltip="by failing step name" tooltip-class="helpBox" ></span>
+        </span>
+        <br/>
+        &nbsp;
+    </div>
+
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Showing {{filtered.length}} of {{allScenarios.data.length}} Scenarios</h3>
+                </div>
+
+        <div class="panel-body">
+            <table class="table table-condensed table-striped table-hover">
+                <thead>
+                <tr>
+                    <th class="table-row-cell">#</th>
+                    <th style="width: 70%" class="table-row-cell">Scenario</th>
+                    <th class="table-row-cell">Total Steps</th>
+                    <th class="table-row-cell">Passed</th>
+                    <th class="table-row-cell">Failed</th>
+                    <th class="table-row-cell">Skipped</th>
+                    <th class="table-row-cell">Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="scenario in filtered = (allScenarios.data | filter:filterScenario)">
+                    <td>{{$index+1}}.</td>
+                    <td class="table-row-cell">
+                        <div>{{scenario.name}}</div>
+                        <i class="multiline-text">{{scenario.description}}</i>
+
+                        <div class="well well-sm text-danger" collapse="scenario.result.isCollapsed"
+                             ng-if="scenario.result.failed > 0">
+                            <div>Failed at line({{scenario.result.failedStep.line}}) of
+                                <strong><em>"{{scenario.featureFileName}}"</em></strong>
+                            </div>
+                            <span><strong>{{scenario.result.failedStep.keyword}}</strong>&nbsp;{{scenario.result.failedStep.name}}</span>
+                            <table class="table table-bordered" ng-if="scenario.result.failedStep.rows">
+                                <tr ng-repeat="row in scenario.result.failedStep.rows">
+                                    <td ng-repeat="cell in row.cells track by $index">
+                                        {{cell}}
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="alert-danger"><i class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></i>&nbsp;{{scenario.result.failedStep.result.error_message}}</div>
+                        </div>
+                    </td>
+                    <td class="table-row-cell">{{scenario.result.passed +
+                        scenario.result.failed+scenario.result.skipped}}
+                    </td>
+                    <td class="table-row-cell">{{scenario.result.passed}}</td>
+                    <td class="table-row-cell">{{scenario.result.failed}}</td>
+                    <td class="table-row-cell">{{scenario.result.skipped}}</td>
+                    <td class="table-row-cell">
+                <span class="btn btn-success" ng-if="scenario.result.failed <= 0">
+                    <i class="glyphicon glyphicon-ok"
+                       aria-hidden="true"></i>&nbsp;{{scenario.result.status}}
+                </span>
+                        <button class="btn btn-danger" ng-if="scenario.result.failed > 0"
+                                ng-click="scenario.result.isCollapsed = !scenario.result.isCollapsed">
+                            <i class="glyphicon"
+                               ng-class="{'glyphicon-eye-close': scenario.result.isCollapsed,'glyphicon-eye-open' : !scenario.result.isCollapsed}"
+                               aria-hidden="true"></i>&nbsp;{{scenario.result.status}}
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+        </div>
+</div>
+
+
+

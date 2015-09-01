@@ -1,0 +1,43 @@
+<div class="container-fluid">
+    <div class="row">
+        <strong>Filter :</strong>&nbsp;
+        <input type="text" ng-model="filterFeature.name" tooltip-placement="top"
+               tooltip="by feature name" tooltip-class="helpBox">
+        <br/>
+        &nbsp;
+    </div>
+
+    <div class="row">
+        <accordion>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Showing {{filtered.length}} of {{executionReport.length}} Features</h3>
+                </div>
+                <div class="panel-body">
+                    <accordion-group is-open="status.open"
+                                     ng-repeat="feature in filtered = (executionReport | filter:filterFeature)">
+                        <accordion-heading>
+                            <i class="pull-right glyphicon"
+                               ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                            {{feature.name}} <span class="label label-danger">{{feature.result.scenarios}}</span>
+                            <br/>
+                            <i>{{feature.description}}</i>
+                        </accordion-heading>
+                        <div class="panel panel-default" ng-repeat="element in feature.elements">
+                            <div class="panel-heading"><strong>{{element.keyword}}:</strong>&nbsp;&nbsp;{{element.name}}
+                                <div><i>{{element.description}}</i></div>
+                            </div>
+
+                            <div class="panel-body">
+                                <div style="margin-left: 5px" ng-repeat="step in element.steps">
+                                    <strong>{{step.keyword}}</strong>{{step.name}}
+                                </div>
+                            </div>
+                        </div>
+                    </accordion-group>
+                </div>
+            </div>
+        </accordion>
+
+    </div>
+</div>
